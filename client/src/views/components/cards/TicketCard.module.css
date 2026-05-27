@@ -1,0 +1,129 @@
+.card {
+  position: relative;
+  background: var(--dark-brown);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Accent bar top — morado */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--purple);
+  z-index: 1;
+}
+
+/* ── Imagen ── */
+.imageWrap {
+  height: 160px;
+  overflow: hidden;
+  background: var(--near-black);
+  flex-shrink: 0;
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.card:hover .img { transform: scale(1.05); }
+
+/* ── Cuerpo ── */
+.body {
+  padding: var(--space-5);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.15rem var(--space-2);
+  border-radius: var(--radius-full);
+  background: rgba(166, 61, 47, 0.14);
+  color: var(--copper);
+  border: 1px solid rgba(166, 61, 47, 0.3);
+  align-self: flex-start;
+}
+
+.name {
+  font-family: var(--font-brand);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--cream);
+  line-height: 1.2;
+}
+
+.eventName {
+  font-size: var(--text-sm);
+  color: #4caf8a;
+  font-weight: 500;
+}
+
+/* Fila: fecha + cupos */
+.ticketInfo {
+  display: flex;
+  gap: var(--space-4);
+  align-items: center;
+  font-size: var(--text-xs);
+  flex-wrap: wrap;
+  margin-top: var(--space-1);
+}
+
+.date { color: var(--muted); font-style: italic; }
+
+.spotsOk   { color: #4caf8a; font-weight: 500; }
+.spotsLow  { color: var(--gold); font-weight: 500; }
+.spotsNone { color: var(--copper); font-weight: 500; }
+
+.desc {
+  font-size: var(--text-sm);
+  color: var(--muted);
+  line-height: 1.65;
+  flex: 1;
+}
+
+/* ── Footer: precio ── */
+.footer {
+  padding: var(--space-3) var(--space-5) var(--space-5);
+  border-top: 1px solid var(--border);
+  margin-top: auto;
+}
+
+.price {
+  font-family: var(--font-brand);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--gold);
+}
+
+/* ── Botón de compra ── */
+.eventBtn {
+  width: 100%;
+  padding: var(--space-3) var(--space-5);
+  background: var(--purple);
+  color: var(--cream);
+  font-family: var(--font-brand);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: opacity var(--transition);
+  border-top: 1px solid var(--border);
+  letter-spacing: 0.04em;
+}
+
+.eventBtn:hover         { opacity: 0.85; }
+.eventBtn:disabled      { opacity: 0.4; cursor: not-allowed; }

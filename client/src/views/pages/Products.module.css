@@ -1,0 +1,123 @@
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 2rem 4rem;
+}
+
+/* ── Header ── */
+.header {
+  text-align: center;
+  margin-bottom: var(--space-10);
+}
+
+.title {
+  font-family: var(--font-brand);
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--gold);
+  display: inline-block;
+  position: relative;
+  padding-bottom: var(--space-4);
+  margin-bottom: var(--space-3);
+}
+
+.title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 2px;
+  background: var(--copper);
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: var(--text-base);
+}
+
+/* ── Tabs ── */
+.tabsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-8);
+}
+
+.tabBtn {
+  padding: var(--space-2) var(--space-5);
+  background: var(--dark-brown);
+  color: var(--muted);
+  border: 1px solid rgba(245, 166, 35, 0.2);
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  font-weight: 400;
+  transition: all var(--transition);
+}
+
+.tabBtn:hover {
+  border-color: var(--gold);
+  color: var(--cream);
+}
+
+.tabBtn.active {
+  background: var(--gold);
+  color: var(--near-black);
+  border-color: var(--gold);
+  font-weight: 500;
+}
+
+/* ── Grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.25rem;
+  padding: 2rem 0;
+  width: 100%;
+}
+
+@media (max-width: 1200px) {
+  .grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 900px) {
+  .grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 600px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 400px) {
+  .grid { grid-template-columns: 1fr; }
+}
+
+/* ── States ── */
+.loading {
+  text-align: center;
+  padding: var(--space-16) var(--page-pad);
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+.errorMsg {
+  text-align: center;
+  padding: var(--space-16) var(--page-pad);
+  color: var(--copper);
+  font-size: var(--text-sm);
+}
+
+.noResults {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: var(--space-16);
+  color: var(--muted);
+  font-size: var(--text-sm);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .page {
+    padding: var(--space-8) var(--space-4) var(--space-12);
+  }
+}

@@ -1,0 +1,131 @@
+/* ── Navbar base ── */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0 2.5rem;
+  height: var(--nav-height);
+  background: #080402;
+  border-bottom: 1px solid var(--border);
+  overflow: visible;
+}
+
+/* ── Brand ── */
+.nav-brand {
+  font-family: var(--font-brand);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.nav-brand-error { color: var(--cream); }
+.nav-brand-code  { color: var(--gold); cursor: default; }
+
+/* ── Links ── */
+.nav-list {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  list-style: none;
+  margin: 0 0 0 auto;
+  padding: 0;
+}
+
+.nav-link {
+  position: relative;
+  display: block;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+  font-weight: 400;
+  color: var(--muted);
+  border-radius: var(--radius-sm);
+  transition: color var(--transition);
+}
+
+.nav-link:hover  { color: var(--cream); }
+.nav-link.active { color: var(--gold); }
+
+/* Punto dorado bajo el link activo */
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+
+/* ── Auth ── */
+.nav-auth {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+  margin-left: var(--space-8);
+}
+
+.btn-nav {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--muted);
+  border-radius: var(--radius-sm);
+  transition: color var(--transition);
+}
+
+.btn-nav:hover { color: var(--cream); }
+
+.btn-nav-primary {
+  background: var(--gold);
+  color: var(--near-black) !important;
+  font-weight: 500;
+  padding: var(--space-2) var(--space-5);
+  transition: background var(--transition);
+}
+
+.btn-nav-primary:hover { background: #e8961e; }
+
+/* ── Espuma ── */
+.nav-foam {
+  position: absolute;
+  bottom: -28px;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  pointer-events: none;
+  z-index: 99;
+  overflow: hidden;
+}
+
+.nav-foam svg {
+  width: 100%;
+  height: 30px;
+  display: block;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 var(--space-4);
+  }
+
+  .nav-list {
+    display: none;
+  }
+
+  .nav-brand {
+    font-size: var(--text-base);
+  }
+
+  .nav-auth {
+    margin-left: auto;
+  }
+}

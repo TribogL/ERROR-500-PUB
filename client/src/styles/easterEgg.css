@@ -1,0 +1,161 @@
+@import './tokens.css';
+
+/* ── Overlay ── */
+.e500-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 4, 2, 0.82);
+  animation: e500FadeIn 0.25s ease;
+}
+
+@keyframes e500FadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Caja del personaje ── */
+.e500-glitch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  padding: 2.5rem 3rem;
+  border: 1px solid var(--gold);
+  background: rgba(8, 4, 2, 0.95);
+  cursor: pointer;
+  position: relative;
+  animation: e500GlitchIn 0.3s cubic-bezier(0.2, 0, 0, 1.4);
+  image-rendering: pixelated;
+}
+
+@keyframes e500GlitchIn {
+  from { transform: scale(0.6); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+.e500-glitch:hover { border-color: var(--cream); }
+
+/* ── Sprite pixel art (invader 8×8, S=8px) ── */
+.e500-sprite {
+  position: relative;
+  width:  64px;
+  height: 64px;
+}
+
+.e500-sprite::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top:  -8px;
+  left: -8px;
+  width:  8px;
+  height: 8px;
+  background: transparent;
+  box-shadow:
+    /* Row 0: cols 2,3,4,5 */
+    24px  8px 0 0 var(--gold),
+    32px  8px 0 0 var(--gold),
+    40px  8px 0 0 var(--gold),
+    48px  8px 0 0 var(--gold),
+    /* Row 1: cols 1,3,4,6 */
+    16px 16px 0 0 var(--gold),
+    32px 16px 0 0 var(--gold),
+    40px 16px 0 0 var(--gold),
+    56px 16px 0 0 var(--gold),
+    /* Row 2: cols 1,2,3,4,5,6 */
+    16px 24px 0 0 var(--gold),
+    24px 24px 0 0 var(--gold),
+    32px 24px 0 0 var(--gold),
+    40px 24px 0 0 var(--gold),
+    48px 24px 0 0 var(--gold),
+    56px 24px 0 0 var(--gold),
+    /* Row 3: cols 0,1,3,4,6,7 */
+     8px 32px 0 0 var(--gold),
+    16px 32px 0 0 var(--gold),
+    32px 32px 0 0 var(--gold),
+    40px 32px 0 0 var(--gold),
+    56px 32px 0 0 var(--gold),
+    64px 32px 0 0 var(--gold),
+    /* Row 4: cols 0-7 */
+     8px 40px 0 0 var(--gold),
+    16px 40px 0 0 var(--gold),
+    24px 40px 0 0 var(--gold),
+    32px 40px 0 0 var(--gold),
+    40px 40px 0 0 var(--gold),
+    48px 40px 0 0 var(--gold),
+    56px 40px 0 0 var(--gold),
+    64px 40px 0 0 var(--gold),
+    /* Row 5: cols 1,6 */
+    16px 48px 0 0 var(--gold),
+    56px 48px 0 0 var(--gold),
+    /* Row 6: cols 2,5 */
+    24px 56px 0 0 var(--gold),
+    48px 56px 0 0 var(--gold),
+    /* Row 7: cols 3,4 */
+    32px 64px 0 0 var(--gold),
+    40px 64px 0 0 var(--gold);
+}
+
+.e500-glitch:hover .e500-sprite::before {
+  filter: drop-shadow(0 0 6px var(--gold));
+}
+
+/* ── Etiqueta parpadeante ── */
+.e500-glitch-label {
+  font-family: var(--font-brand);
+  font-size: 0.85rem;
+  letter-spacing: 0.25em;
+  color: var(--gold);
+  animation: e500Blink 0.9s step-end infinite;
+}
+
+@keyframes e500Blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ── Botón OFF flotante ── */
+.e500-off-btn {
+  position: fixed;
+  bottom: 5rem;
+  right:  1.5rem;
+  z-index: 900;
+  font-family: var(--font-brand);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: var(--copper);
+  border: 1px solid var(--copper);
+  background: rgba(8, 4, 2, 0.92);
+  padding: 0.45rem 1rem;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+
+.e500-off-btn:hover {
+  background: var(--copper);
+  color: var(--near-black);
+}
+
+/* ── Pixel mode: efecto visual en el body ── */
+body.e500-pixel-mode {
+  image-rendering: pixelated;
+}
+
+body.e500-pixel-mode::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.08) 2px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
+}
