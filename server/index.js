@@ -36,15 +36,23 @@ app.use((err, req, res, next) => {
 })
 
 // Cron — limpiar reservas de invitados pendientes cada hora
-const AdminService = require('./src/services/AdminService')
-cron.schedule('0 * * * *', async () => {
-  try {
-    const removed = await AdminService.cleanupGuestReservations()
-    if (removed > 0) console.log(`[cron] cleanup_guest_reservations: ${removed} eliminadas`)
-  } catch (err) {
-    console.error('[cron] cleanup_guest_reservations error:', err.message)
-  }
-})
+if (!process.env.VERCEL) {
+  const AdminService = require('./src/services/AdminService')
+
+  cron.schedule('0 * * * *', async () => {
+    try {
+      const removed = await AdminService.cleanupGuestReservations()
+      if (removed > 0) console.log(`[cron] cleanup_guest_reservations: ${removed} eliminadas`)
+    } catch (err) {
+      console.error('[cron] cleanup_guest_reservations error:', err.message)
+    }
+  })
+}
 
 const PORT = process.env.PORT || 3000
-app.listen(PORT, () => console.log(`Error 500 Server running on port ${PORT}`))
+
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => console.log(`Error 500 Server running on port ${PORT}`))
+}
+
+module.exports = app
