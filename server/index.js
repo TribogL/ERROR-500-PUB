@@ -1,33 +1,73 @@
 require('dotenv').config()
 const express = require('express')
-const cors    = require('cors')
-const cron    = require('node-cron')
+const cors = require('cors')
+const cron = require('node-cron')
 
 const app = express()
 
-app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173' }))
+app.use(cors({
+  origin: process.env.CLIENT_URL || 'http://localhost:5173'
+}))
+
 app.use(express.json())
 
-// Routes — existing
-app.use('/api/products',     require('./src/routes/products'))
-app.use('/api/orders',       require('./src/routes/orders'))
-app.use('/api/reservations', require('./src/routes/reservations'))
+// Root route
+app.get('/', (req, res) => {
+  res.json({
+    status: 'ok',
+    message: 'Error 500 API is running',
+    health: '/api/health'
+  })
+})
 
-// Routes — new
-app.use('/api/auth',    require('./src/routes/auth'))
-app.use('/api/events',  require('./src/routes/events'))
-app.use('/api/tickets', require('./src/routes/tickets'))
-app.use('/api/loyalty', require('./src/routes/loyalty'))
-app.use('/api/persons', require('./src/routes/persons'))
-app.use('/api/staff',     require('./src/routes/staff'))
-app.use('/api/admin',     require('./src/routes/admin'))
-app.use('/api/community', require('./src/routes/community'))
+// Routers
+const productsRouter = require('./src/routes/products')
+const ordersRouter = require('./src/routes/orders')
+const reservationsRouter = require('./src/routes/reservations')
+const authRouter = require('./src/routes/auth')
+const eventsRouter = require('./src/routes/events')
+const ticketsRouter = require('./src/routes/tickets')
+const loyaltyRouter = require('./src/routes/loyalty')
+const personsRouter = require('./src/routes/persons')
+const staffRouter = require('./src/routes/staff')
+const adminRouter = require('./src/routes/admin')
+const communityRouter = require('./src/routes/community')
+
+// Routes with /api
+app.use('/api/products', productsRouter)
+app.use('/api/orders', ordersRouter)
+app.use('/api/reservations', reservationsRouter)
+app.use('/api/auth', authRouter)
+app.use('/api/events', eventsRouter)
+app.use('/api/tickets', ticketsRouter)
+app.use('/api/loyalty', loyaltyRouter)
+app.use('/api/persons', personsRouter)
+app.use('/api/staff', staffRouter)
+app.use('/api/admin', adminRouter)
+app.use('/api/community', communityRouter)
+
+// Routes without /api, useful for Vercel internal routing
+app.use('/products', productsRouter)
+app.use('/orders', ordersRouter)
+app.use('/reservations', reservationsRouter)
+app.use('/auth', authRouter)
+app.use('/events', eventsRouter)
+app.use('/tickets', ticketsRouter)
+app.use('/loyalty', loyaltyRouter)
+app.use('/persons', personsRouter)
+app.use('/staff', staffRouter)
+app.use('/admin', adminRouter)
+app.use('/community', communityRouter)
 
 // Health check
-app.get('/api/health', (req, res) => res.json({ status: 'ok', project: 'Error 500 Bar' }))
+app.get(['/api/health', '/health'], (req, res) => {
+  res.json({ status: 'ok', project: 'Error 500 Bar' })
+})
 
 // 404
-app.use((req, res) => res.status(404).json({ success: false, error: 'Route not found' }))
+app.use((req, res) => {
+  res.status(404).json({ success: false, error: 'Route not found' })
+})
 
 // Error handler
 app.use((err, req, res, next) => {
