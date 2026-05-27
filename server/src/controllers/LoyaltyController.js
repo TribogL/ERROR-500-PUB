@@ -91,7 +91,7 @@ class LoyaltyController {
   async getAllHistory(req, res) {
     const { data, error } = await supabase
       .from('loyalty_transactions')
-      .select('*, persons(first_name, last_name, email)')
+      .select('*, persons!loyalty_transactions_person_id_fkey(first_name, last_name, email)')
       .order('created_at', { ascending: false })
       .limit(50)
     if (error) return res.status(500).json({ success: false, error: error.message })
@@ -101,28 +101,61 @@ class LoyaltyController {
   async redeemPoints(req, res) {
     try {
       const { rewardId } = req.body
-      let pointsToRedeem = req.body.points
+      const personId = req.user.id
 
-      if (rewardId) {
-        const { data: reward, error: re } = await supabase
-          .from('loyalty_rewards')
-          .select('lp_cost, stock, available')
-          .eq('id', rewardId)
-          .single()
-        if (re || !reward) throw new Error('Reward no encontrada')
-        if (!reward.available || reward.stock <= 0) throw new Error('Reward no disponible o sin stock')
-        pointsToRedeem = reward.lp_cost
-        await supabase
-          .from('loyalty_rewards')
-          .update({ stock: reward.stock - 1 })
-          .eq('id', rewardId)
-      }
+      // 1. Obtener el reward
+      const { data: reward, error: re } = await supabase
+        .from('loyalty_rewards')
+        .select('*')
+        .eq('id', rewardId)
+        .single()
+      if (re || !reward) return res.status(404).json({ success: false, error: 'Reward not found' })
 
-      const newBalance = await LoyaltyService.redeemPoints(req.user.id, pointsToRedeem)
-      res.json({ success: true, data: { balance: newBalance } })
+      // 2. Verificar disponibilidad y stock
+      if (!reward.available || reward.stock <= 0)
+        return res.status(400).json({ success: false, error: 'Reward not available' })
+
+      // 3. Verificar balance del usuario
+      const { data: customer } = await supabase
+        .from('customers')
+        .select('loyalty_balance')
+        .eq('person_id', personId)
+        .single()
+
+      if (!customer || customer.loyalty_balance < reward.lp_cost)
+        return res.status(400).json({ success: false, error: 'Insufficient LP balance' })
+
+      // 4. Descontar stock del reward
+      await supabase
+        .from('loyalty_rewards')
+        .update({ stock: reward.stock - 1 })
+        .eq('id', rewardId)
+
+      // 5. Crear redemption record
+      await supabase
+        .from('reward_redemptions')
+        .insert({ person_id: personId, reward_id: rewardId, status: 'pending' })
+
+      // 6. Crear loyalty_transaction con puntos negativos
+      // El trigger update_loyalty_balance actualizará el balance automáticamente
+      const { data: transaction, error: te } = await supabase
+        .from('loyalty_transactions')
+        .insert({
+          person_id:   personId,
+          reward_id:   rewardId,
+          points:      -reward.lp_cost,
+          type:        'redeemed',
+          description: `Canje: ${reward.name}`,
+        })
+        .select()
+        .single()
+
+      if (te) throw te
+
+      res.json({ success: true, data: transaction })
     } catch (err) {
       console.error('[LoyaltyController.redeemPoints]', err)
-      res.status(400).json({ success: false, error: err.message })
+      res.status(500).json({ success: false, error: err.message })
     }
   }
 }

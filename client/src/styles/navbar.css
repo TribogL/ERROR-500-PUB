@@ -25,7 +25,13 @@
 }
 
 .nav-brand-error { color: var(--cream); }
-.nav-brand-code  { color: var(--gold); cursor: default; }
+.nav-brand-code  {
+  color: var(--gold);
+  cursor: default;
+  pointer-events: auto;
+  position: relative;
+  z-index: 1;
+}
 
 /* ── Links ── */
 .nav-list {

@@ -6,6 +6,11 @@ export default function Home() {
     <main>
       {/* ── Hero ── */}
       <section className={styles.welcomeSection}>
+        <div className={`${styles.particle} ${styles.particle1}`} aria-hidden="true" />
+        <div className={`${styles.particle} ${styles.particle2}`} aria-hidden="true" />
+        <div className={`${styles.particle} ${styles.particle3}`} aria-hidden="true" />
+        <div className={`${styles.particle} ${styles.particle4}`} aria-hidden="true" />
+
         <div className={styles.heroContent}>
           <span className={styles.eyebrow}>// bienvenido al bar</span>
 
@@ -22,6 +27,21 @@ export default function Home() {
           <div className={styles.btnRow}>
             <Link to="/products" className={styles.btnPrimary}>Ver la carta</Link>
             <Link to="/reserve"  className={styles.btnSecondary}>Reservar mesa</Link>
+          </div>
+
+          <div className={styles.statsRow}>
+            <div className={styles.stat}>
+              <span className={styles.statNum}>16+</span>
+              <span className={styles.statLabel}>Cervezas artesanales</span>
+            </div>
+            <div className={styles.stat}>
+              <span className={styles.statNum}>8</span>
+              <span className={styles.statLabel}>Eventos al mes</span>
+            </div>
+            <div className={styles.stat}>
+              <span className={styles.statNum}>500</span>
+              <span className={styles.statLabel}>Bugs ahogados</span>
+            </div>
           </div>
         </div>
       </section>

@@ -5,10 +5,26 @@ class StaffService {
   async getAll() {
     const { data, error } = await supabase
       .from('staff')
-      .select('*, persons(*)')
+      .select(`
+        id,
+        level,
+        department,
+        hired_at,
+        person_id,
+        person:persons!staff_person_id_fkey(
+          id,
+          first_name,
+          last_name,
+          email
+        )
+      `)
       .order('hired_at', { ascending: false })
-    if (error) throw error
-    return data.map(row => PersonFactory.fromDB(row.persons, null, row))
+
+    if (error) {
+      console.error('[StaffService.getAll]', error)
+      throw error
+    }
+    return data
   }
 
   async getById(personId) {
@@ -25,10 +41,10 @@ class StaffService {
     const { data, error } = await supabase
       .from('staff')
       .insert({ person_id: personId, level, department, hired_at: hiredAt, created_by: createdBy })
-      .select('*, persons(*)')
+      .select('id, level, department, hired_at, person_id, person:persons!staff_person_id_fkey(id, first_name, last_name, email)')
       .single()
     if (error) throw error
-    return PersonFactory.fromDB(data.persons, null, data)
+    return data
   }
 
   async updateLevel(personId, level) {
@@ -46,14 +62,32 @@ class StaffService {
     const updates = {}
     if (level      !== undefined) updates.level      = level
     if (department !== undefined) updates.department = department
-    const { data, error } = await supabase
+
+    const { error } = await supabase
       .from('staff')
       .update(updates)
       .eq('person_id', personId)
-      .select('*, persons(*)')
+
+    if (error) {
+      console.error('[StaffService.update]', error)
+      throw error
+    }
+
+    const { data: updated, error: e2 } = await supabase
+      .from('staff')
+      .select('id, level, department, hired_at, person_id')
+      .eq('person_id', personId)
       .single()
-    if (error) throw error
-    return PersonFactory.fromDB(data.persons, null, data)
+
+    if (e2) throw e2
+
+    const { data: person } = await supabase
+      .from('persons')
+      .select('id, first_name, last_name, email')
+      .eq('id', personId)
+      .single()
+
+    return { ...updated, person: person || null }
   }
 
   async remove(personId) {

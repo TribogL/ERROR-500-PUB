@@ -1,74 +1,111 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import easterEggService from '../../../services/easterEggService.js'
 import '../../../styles/easterEgg.css'
 
 export default function EasterEgg() {
   const [glitchVisible, setGlitchVisible] = useState(false)
   const [active, setActive]               = useState(() => easterEggService.isActive())
-  const timerRef = useRef(null)
+  const [btnShift, setBtnShift]           = useState(false)
 
-  /* Oculta el glitch si el easter egg se desactiva desde settings */
+  /* Restaurar audio si el pixel mode ya estaba activo al montar */
+  useEffect(() => {
+    if (easterEggService.isActive()) {
+      document.body.classList.add('e500-pixel-mode')
+      easterEggService.startAudio()
+    }
+    return () => { easterEggService.stopAudio() }
+  }, [])
+
+  /* Desplaza el botón [OFF] cuando el CartDrawer está abierto */
+  useEffect(() => {
+    const onOpen  = () => setBtnShift(true)
+    const onClose = () => setBtnShift(false)
+    window.addEventListener('cart-opened', onOpen)
+    window.addEventListener('cart-closed', onClose)
+    return () => {
+      window.removeEventListener('cart-opened', onOpen)
+      window.removeEventListener('cart-closed', onClose)
+    }
+  }, [])
+
+  /* Oculta el glitch si el easter egg hover se deshabilita desde settings */
   useEffect(() => {
     const handler = () => {
       setGlitchVisible(false)
-      setActive(false)
+      // pixel mode no se toca — el usuario usa el botón [OFF] flotante para eso
     }
     window.addEventListener('e500-easter-egg-disabled', handler)
     return () => window.removeEventListener('e500-easter-egg-disabled', handler)
   }, [])
 
-  /* Aplica pixel mode y audio cuando está activo */
+  /* Detectar hover sobre el "500" del navbar — reintenta hasta encontrar el elemento */
   useEffect(() => {
-    if (active) {
-      document.body.classList.add('e500-pixel-mode')
-      easterEggService.startAudio()
-    }
-    return () => {
-      if (active) {
-        document.body.classList.remove('e500-pixel-mode')
-        easterEggService.stopAudio()
+    let retryId = null
+
+    const attach = () => {
+      // Intentar con .nav-brand-code primero, fallback a .nav-brand
+      let target = document.querySelector('.nav-brand-code')
+      if (!target) target = document.querySelector('.nav-brand')
+
+      if (!target) {
+        retryId = setTimeout(attach, 200)
+        return
+      }
+
+      console.log('[EasterEgg] attaching to:', target)
+
+      let hoverTimer = null
+
+      const onEnter = () => {
+        if (!easterEggService.isEnabled()) return
+        if (easterEggService.isActive()) return
+        console.log('[EasterEgg] hover start')
+        hoverTimer = setTimeout(() => {
+          if (!easterEggService.isEnabled()) return
+          if (easterEggService.isActive()) return
+          console.log('[EasterEgg] glitch show!')
+          setGlitchVisible(true)
+        }, 3000)
+      }
+
+      const onLeave = () => {
+        if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = null }
+        setGlitchVisible(false)
+      }
+
+      target.addEventListener('mouseenter', onEnter)
+      target.addEventListener('mouseleave', onLeave)
+      target.addEventListener('pointerenter', onEnter)
+      target.addEventListener('pointerleave', onLeave)
+
+      cleanup = () => {
+        if (hoverTimer) clearTimeout(hoverTimer)
+        target.removeEventListener('mouseenter', onEnter)
+        target.removeEventListener('mouseleave', onLeave)
+        target.removeEventListener('pointerenter', onEnter)
+        target.removeEventListener('pointerleave', onLeave)
       }
     }
-  }, [active])
 
-  /* Engancha hover de 3s sobre el "500" del brand */
-  useEffect(() => {
-    if (active) return  /* en pixel mode no mostrar el popup */
-
-    const target = document.querySelector('.nav-brand-code')
-    if (!target) return
-
-    function onEnter() {
-      if (!easterEggService.isEnabled()) return
-      timerRef.current = setTimeout(() => {
-        if (!easterEggService.isEnabled()) return
-        setGlitchVisible(true)
-      }, 3000)
-    }
-    function onLeave() {
-      clearTimeout(timerRef.current)
-      setGlitchVisible(false)
-    }
-
-    target.addEventListener('mouseenter', onEnter)
-    target.addEventListener('mouseleave', onLeave)
+    let cleanup = null
+    attach()
 
     return () => {
-      clearTimeout(timerRef.current)
-      target.removeEventListener('mouseenter', onEnter)
-      target.removeEventListener('mouseleave', onLeave)
+      if (retryId) clearTimeout(retryId)
+      if (cleanup) cleanup()
     }
-  }, [active])
+  }, [])
 
-  function handleActivate() {
-    easterEggService.activate()
-    setActive(true)
+  const handleActivate = () => {
     setGlitchVisible(false)
+    setActive(true)
+    easterEggService.activate()
+    easterEggService.startAudio()
   }
 
-  function handleDeactivate() {
-    easterEggService.deactivate()
+  const handleDeactivate = () => {
     setActive(false)
+    easterEggService.deactivate()   // stopAudio() + localStorage + body class + event
   }
 
   return (
@@ -91,7 +128,7 @@ export default function EasterEgg() {
       {active && (
         <button
           type="button"
-          className="e500-off-btn"
+          className={`e500-off-btn${btnShift ? ' cart-open' : ''}`}
           onClick={handleDeactivate}
         >
           [OFF]

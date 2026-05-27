@@ -97,7 +97,7 @@ export default function AdminDashboard() {
   const [historyLoading, setHistoryLoading] = useState(false)
 
   // ── easter egg ─────────────────────────────────────────────────────────────
-  const [pixelMode, setPixelMode] = useState(easterEggService.isActive())
+  const [easterEggEnabled, setEasterEggEnabled] = useState(easterEggService.isEnabled())
 
   const [modalError, setModalError] = useState('')
 
@@ -113,8 +113,8 @@ export default function AdminDashboard() {
       try {
         const fetches = [
           permissions.canViewMetrics ? api.get('/admin/metrics') : Promise.resolve(null),
-          api.get('/admin/orders?limit=10'),
-          api.get('/admin/reservations'),
+          api.get('/orders?limit=10'),
+          api.get('/reservations'),
         ]
         const [metricsRes, ordersRes, reservRes] = await Promise.allSettled(fetches)
         if (metricsRes.status === 'fulfilled' && metricsRes.value) setMetrics(metricsRes.value.data)
@@ -560,12 +560,12 @@ export default function AdminDashboard() {
                   <tbody>
                     {staffList.map(s => (
                       <tr key={s.id}>
-                        <td className={styles.listName}>{s.firstName} {s.lastName}</td>
-                        <td className={styles.listMeta}>{s.email}</td>
+                        <td className={styles.listName}>{s.person?.first_name} {s.person?.last_name}</td>
+                        <td className={styles.listMeta}>{s.person?.email}</td>
                         <td><span className={styles.badge}>{LEVEL_LABEL[s.level] ?? s.level}</span></td>
                         <td className={styles.listMeta}>{s.department ?? '—'}</td>
                         <td className={styles.listMeta}>
-                          {s.hiredAt ? new Date(s.hiredAt).toLocaleDateString('es-CO') : '—'}
+                          {s.hired_at ? new Date(s.hired_at).toLocaleDateString('es-CO') : '—'}
                         </td>
                         {permissions.canManageStaff && (
                           <td className={styles.actionCell}>
@@ -734,6 +734,9 @@ export default function AdminDashboard() {
           <section className={styles.section}>
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>Historial de puntos</h2>
+              <button type="button" className={styles.btnSecondary} onClick={loadHistory}>
+                ↻ Refrescar
+              </button>
             </div>
             {historyLoading ? (
               <p className={styles.emptyState}>Cargando…</p>
@@ -821,25 +824,20 @@ export default function AdminDashboard() {
             </div>
             <div className={styles.statsRow}>
               <div className={styles.statCard} style={{ '--accent-bar': 'var(--copper)' }}>
-                <p className={styles.statLabel}>Modo Pixel</p>
-                <p className={styles.statUnit}>Easter egg: activa el tema retro con música</p>
+                <p className={styles.statLabel}>Easter Egg habilitado</p>
+                <p className={styles.statUnit}>Activa o desactiva el efecto hover sobre el logo</p>
                 <button
                   type="button"
-                  className={pixelMode ? styles.btnCancel : styles.btnConfirm}
+                  className={easterEggEnabled ? styles.btnConfirm : styles.btnCancel}
                   style={{ marginTop: 12 }}
                   onClick={() => {
-                    if (easterEggService.isActive()) {
-                      easterEggService.deactivate()
-                      easterEggService.setEnabled(false)
-                      window.dispatchEvent(new Event('e500-easter-egg-disabled'))
-                    } else {
-                      easterEggService.setEnabled(true)
-                      easterEggService.activate()
-                    }
-                    setPixelMode(easterEggService.isActive())
+                    const next = !easterEggEnabled
+                    easterEggService.setEnabled(next)
+                    setEasterEggEnabled(next)
+                    if (!next) window.dispatchEvent(new Event('e500-easter-egg-disabled'))
                   }}
                 >
-                  {pixelMode ? 'Desactivar Pixel Mode' : 'Activar Pixel Mode'}
+                  {easterEggEnabled ? 'Habilitado' : 'Deshabilitado'}
                 </button>
               </div>
             </div>
@@ -888,7 +886,7 @@ export default function AdminDashboard() {
         <ModalShell title="Editar staff" onClose={() => setStaffModal(null)}
           error={modalError} onSubmit={handleUpdateStaff}>
           <p style={{ color: 'var(--cream,#f5e6c8)', opacity: .65, marginTop: 0, marginBottom: 14 }}>
-            {staffModal.firstName} {staffModal.lastName} · {staffModal.email}
+            {staffModal.person?.first_name} {staffModal.person?.last_name} · {staffModal.person?.email}
           </p>
           <label style={M.lbl}>Level</label>
           <select style={M.sel} name="level" defaultValue={staffModal.level} required>

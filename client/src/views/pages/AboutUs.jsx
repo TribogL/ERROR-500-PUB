@@ -1,7 +1,7 @@
 import styles from './AboutUs.module.css'
 
 const STATS = [
-  { value: '2024', label: 'Fundado'            },
+  { value: '2026', label: 'Fundado'            },
   { value: '500+', label: 'Cervezas servidas'  },
   { value: '20+',  label: 'Eventos realizados' },
   { value: '7',    label: 'Días a la semana'   },
@@ -14,10 +14,11 @@ const VALUES = [
 ]
 
 const TEAM = [
-  { name: 'Valentina Torres', role: 'Fundadora & CEO',    initials: 'VT' },
-  { name: 'Andrés Ruiz',      role: 'Head of Drinks',     initials: 'AR' },
-  { name: 'Camila Méndez',    role: 'Events Manager',     initials: 'CM' },
-  { name: 'Diego Vargas',     role: 'Dev in Residence',   initials: 'DV' },
+  { name: 'Julian Forero',   role: 'Fundador & CEO',                     initials: 'JF' },
+  { name: 'Zephyr Hexbyte',  role: 'Head of Drinks',                     initials: 'ZX' },
+  { name: 'Nova Voltaire',   role: 'Events Manager',                     initials: 'NV' },
+  { name: 'Rune Glitchwood', role: 'Head of Security',                   initials: 'RG' },
+  { name: 'Claude',          role: 'Creative & Organized Digital Assistant', initials: 'CL', avatarColor: 'var(--copper)' },
 ]
 
 export default function AboutUs() {
@@ -33,7 +34,7 @@ export default function AboutUs() {
             Error 500<br />Internal Server Bar
           </h1>
           <p className={styles.heroLead}>
-            Nació en 2024 de una idea simple: un espacio donde la comunidad tech
+            Nació en 2026 de una idea simple: un espacio donde la comunidad tech
             pudiera desconectarse del teclado y conectarse entre personas,
             con buena cerveza de por medio.
           </p>
@@ -93,7 +94,12 @@ export default function AboutUs() {
         <div className={styles.teamGrid}>
           {TEAM.map(m => (
             <div key={m.name} className={styles.teamCard}>
-              <div className={styles.teamAvatar}>{m.initials}</div>
+              <div
+                className={styles.teamAvatar}
+                style={m.avatarColor ? { background: m.avatarColor } : undefined}
+              >
+                {m.initials}
+              </div>
               <p className={styles.teamName}>{m.name}</p>
               <p className={styles.teamRole}>{m.role}</p>
             </div>
@@ -122,12 +128,12 @@ export default function AboutUs() {
       <section className={styles.locationSection}>
         <div className={styles.mapPlaceholder}>
           <span className={styles.mapIcon}>◈</span>
-          <p>Calle 42 # 10-15, Bogotá</p>
+          <p>Calle 10 # 43B-15, El Poblado, Medellín</p>
         </div>
         <div className={styles.locationInfo}>
           <h2 className={styles.sectionTitle}>Encuéntranos</h2>
           <address className={styles.address}>
-            <p>Calle 42 # 10-15, Bogotá</p>
+            <p>Calle 10 # 43B-15, El Poblado, Medellín</p>
             <p>Lunes a viernes: 4pm — 2am</p>
             <p>Sábados y domingos: 12pm — 3am</p>
             <a href="mailto:hola@error500.bar" className={styles.email}>

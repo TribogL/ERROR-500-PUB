@@ -132,7 +132,11 @@
   background: rgba(8, 4, 2, 0.92);
   padding: 0.45rem 1rem;
   cursor: pointer;
-  transition: background var(--transition), color var(--transition);
+  transition: background var(--transition), color var(--transition), right 0.3s ease;
+}
+
+.e500-off-btn.cart-open {
+  right: 420px;
 }
 
 .e500-off-btn:hover {

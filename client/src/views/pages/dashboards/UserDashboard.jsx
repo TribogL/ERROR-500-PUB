@@ -42,7 +42,7 @@ export default function UserDashboard() {
   const [tickets,         setTickets]         = useState([])
   const [rewards,         setRewards]         = useState([])
   const [rewardsLoading,  setRewardsLoading]  = useState(false)
-  const [pixelMode,       setPixelMode]       = useState(easterEggService.isActive())
+  const [easterEggEnabled, setEasterEggEnabled] = useState(easterEggService.isEnabled())
   const [loading,         setLoading]         = useState(true)
 
   const config     = DashboardFactory.createConfig('customer')
@@ -341,19 +341,20 @@ export default function UserDashboard() {
             </div>
             <div className={styles.statsRow}>
               <div className={styles.statCard} style={{ '--accent-bar': 'var(--copper)' }}>
-                <p className={styles.statLabel}>Modo Pixel</p>
-                <p className={styles.statUnit}>Easter egg: activa el tema retro con música</p>
+                <p className={styles.statLabel}>Easter Egg habilitado</p>
+                <p className={styles.statUnit}>Activa o desactiva el efecto hover sobre el logo</p>
                 <button
                   type="button"
-                  className={pixelMode ? styles.btnCancel : styles.btnConfirm}
+                  className={easterEggEnabled ? styles.btnConfirm : styles.btnCancel}
                   style={{ marginTop: 12 }}
                   onClick={() => {
-                    if (easterEggService.isActive()) easterEggService.deactivate()
-                    else easterEggService.activate()
-                    setPixelMode(easterEggService.isActive())
+                    const next = !easterEggEnabled
+                    easterEggService.setEnabled(next)
+                    setEasterEggEnabled(next)
+                    if (!next) window.dispatchEvent(new Event('e500-easter-egg-disabled'))
                   }}
                 >
-                  {pixelMode ? 'Desactivar Pixel Mode' : 'Activar Pixel Mode'}
+                  {easterEggEnabled ? 'Habilitado' : 'Deshabilitado'}
                 </button>
               </div>
             </div>

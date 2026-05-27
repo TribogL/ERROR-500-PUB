@@ -13,6 +13,11 @@ export default function CartDrawer({ onClose }) {
   const [error,   setError]   = useState(null)
 
   useEffect(() => {
+    window.dispatchEvent(new Event('cart-opened'))
+    return () => window.dispatchEvent(new Event('cart-closed'))
+  }, [])
+
+  useEffect(() => {
     function onUpdate() { setItems(cartService.getItems()) }
     window.addEventListener('cart-updated', onUpdate)
     return () => window.removeEventListener('cart-updated', onUpdate)

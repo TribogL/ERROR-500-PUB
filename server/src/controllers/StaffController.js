@@ -4,7 +4,7 @@ class StaffController {
   async getAll(req, res) {
     try {
       const staff = await StaffService.getAll()
-      res.json({ success: true, data: staff.map(s => s.toJSON()) })
+      res.json({ success: true, data: staff })
     } catch (err) {
       res.status(500).json({ success: false, error: err.message })
     }
@@ -27,7 +27,7 @@ class StaffController {
         { level, department, hiredAt },
         req.user.id
       )
-      res.status(201).json({ success: true, data: member.toJSON() })
+      res.status(201).json({ success: true, data: member })
     } catch (err) {
       res.status(400).json({ success: false, error: err.message })
     }
@@ -47,7 +47,7 @@ class StaffController {
     try {
       const { level, department } = req.body
       const updated = await StaffService.update(req.params.id, { level, department })
-      res.json({ success: true, data: updated.toJSON() })
+      res.json({ success: true, data: updated })
     } catch (err) {
       res.status(400).json({ success: false, error: err.message })
     }

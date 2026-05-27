@@ -1,6 +1,22 @@
 const OrderService = require('../services/OrderService')
+const supabase     = require('../../config/database')
 
 class OrderController {
+  async getAll(req, res) {
+    try {
+      const limit = parseInt(req.query.limit) || 50
+      const { data, error } = await supabase
+        .from('orders')
+        .select('*, persons(first_name, last_name, email)')
+        .order('created_at', { ascending: false })
+        .limit(limit)
+      if (error) throw error
+      res.json({ success: true, data })
+    } catch (err) {
+      res.status(500).json({ success: false, error: err.message })
+    }
+  }
+
   async create(req, res) {
     try {
       const { items, lpRedeemed = 0 } = req.body

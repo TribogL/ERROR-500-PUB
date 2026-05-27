@@ -9,6 +9,17 @@
   max-width: var(--page-max);
   margin: 0 auto;
   overflow: hidden;
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(163, 61, 47, 0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, rgba(245, 166, 35, 0.08) 0%, transparent 50%),
+    var(--near-black);
+  background-size: 200% 200%;
+  animation: bgPulse 8s ease-in-out infinite alternate;
+}
+
+@keyframes bgPulse {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
 }
 
 /* Orbe dorado arriba-derecha */
@@ -111,6 +122,90 @@
 .btnSecondary:hover {
   border-color: rgba(242, 232, 213, 0.5);
   transform: translateY(-1px);
+}
+
+/* ── Stats strip ── */
+.statsRow {
+  display: flex;
+  gap: 3rem;
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(242, 232, 213, 0.08);
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.statNum {
+  display: block;
+  font-family: 'Consolas', monospace;
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 0.8rem;
+  color: rgba(242, 232, 213, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* ── Partículas decorativas ── */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: float 12s ease-in-out infinite;
+}
+
+.particle1 {
+  width: 350px;
+  height: 350px;
+  top: -80px;
+  left: 55%;
+  background: radial-gradient(circle, rgba(245, 166, 35, 0.05) 0%, transparent 70%);
+  animation-duration: 14s;
+}
+
+.particle2 {
+  width: 250px;
+  height: 250px;
+  bottom: 10%;
+  right: 5%;
+  background: radial-gradient(circle, rgba(163, 61, 47, 0.06) 0%, transparent 70%);
+  animation-duration: 10s;
+  animation-delay: -3s;
+}
+
+.particle3 {
+  width: 200px;
+  height: 200px;
+  top: 30%;
+  left: -60px;
+  background: radial-gradient(circle, rgba(245, 166, 35, 0.04) 0%, transparent 70%);
+  animation-duration: 16s;
+  animation-delay: -6s;
+}
+
+.particle4 {
+  width: 300px;
+  height: 300px;
+  bottom: -100px;
+  left: 35%;
+  background: radial-gradient(circle, rgba(163, 61, 47, 0.03) 0%, transparent 70%);
+  animation-duration: 18s;
+  animation-delay: -9s;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px)   rotate(0deg); }
+  50%       { transform: translateY(-30px) rotate(180deg); }
 }
 
 /* ── Features grid ── */
@@ -220,6 +315,11 @@
 
   .btnPrimary,
   .btnSecondary { width: 100%; justify-content: center; }
+
+  .statsRow { gap: 1.5rem; }
+  .statNum  { font-size: 1.5rem; }
+
+  .particle1, .particle3 { display: none; }
 
   .ctaSection {
     padding: var(--space-12) var(--space-4);
