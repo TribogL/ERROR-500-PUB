@@ -52,18 +52,14 @@ export default function EasterEgg() {
         return
       }
 
-      console.log('[EasterEgg] attaching to:', target)
-
       let hoverTimer = null
 
       const onEnter = () => {
         if (!easterEggService.isEnabled()) return
         if (easterEggService.isActive()) return
-        console.log('[EasterEgg] hover start')
         hoverTimer = setTimeout(() => {
           if (!easterEggService.isEnabled()) return
           if (easterEggService.isActive()) return
-          console.log('[EasterEgg] glitch show!')
           setGlitchVisible(true)
         }, 3000)
       }

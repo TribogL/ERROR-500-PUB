@@ -3,13 +3,10 @@ const supabase = require('../../config/database')
 // Usuario debe estar autenticado
 async function authMiddleware(req, res, next) {
   const authHeader = req.headers.authorization
-  console.log('[authMiddleware] header:', authHeader?.substring(0, 50))
-
   const token = authHeader?.split(' ')[1]
   if (!token) return res.status(401).json({ success: false, error: 'No token provided' })
 
   const { data: { user }, error } = await supabase.auth.getUser(token)
-  console.log('[authMiddleware] user:', user?.id, 'error:', error?.message)
 
   if (error || !user) return res.status(401).json({ success: false, error: 'Invalid token' })
 

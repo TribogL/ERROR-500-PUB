@@ -23,8 +23,6 @@ export default function ProductCard({
     return () => window.removeEventListener('e500-pixel-toggle', handler)
   }, [])
 
-  console.log('ProductCard props:', { name, image, imagePixel, isPixelMode })
-
   const accent    = ACCENT[category?.toLowerCase()] ?? 'var(--gold)'
   const cardClass = [styles.card, !available ? styles.unavailable : ''].filter(Boolean).join(' ')
   const displayImage = !available

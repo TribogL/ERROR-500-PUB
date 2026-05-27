@@ -56,7 +56,6 @@ export default function CartDrawer({ onClose }) {
       })
 
       const order = builder.build()
-      console.log('Order data:', JSON.stringify(order, null, 2))
       await api.post('/orders', order)
       cartService.clear()
       onClose()

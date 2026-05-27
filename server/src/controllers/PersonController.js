@@ -48,7 +48,6 @@ class PersonController {
   }
 
   async update(req, res) {
-    console.log('[PersonController.update]', req.params.id, req.body)
     try {
       const { first_name, last_name } = req.body
       const { data, error } = await supabase

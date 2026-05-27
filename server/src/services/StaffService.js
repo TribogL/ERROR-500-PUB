@@ -20,10 +20,7 @@ class StaffService {
       `)
       .order('hired_at', { ascending: false })
 
-    if (error) {
-      console.error('[StaffService.getAll]', error)
-      throw error
-    }
+    if (error) throw error
     return data
   }
 
@@ -68,10 +65,7 @@ class StaffService {
       .update(updates)
       .eq('person_id', personId)
 
-    if (error) {
-      console.error('[StaffService.update]', error)
-      throw error
-    }
+    if (error) throw error
 
     const { data: updated, error: e2 } = await supabase
       .from('staff')

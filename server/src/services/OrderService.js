@@ -6,7 +6,6 @@ class OrderService {
 
   async create(orderData) {
     const { items, ...orderFields } = orderData
-    console.log('[OrderService.create] orderFields:', orderFields)
 
     const { data: order, error: oe } = await supabase
       .from('orders')
@@ -33,8 +32,6 @@ class OrderService {
       unit_price: item.unitPrice,
       size_name:  item.sizeName  || null
     }))
-
-    console.log('[OrderService.create] itemRows:', JSON.stringify(itemRows))
 
     const { error: ie } = await supabase
       .from('order_items')

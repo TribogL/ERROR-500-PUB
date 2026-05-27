@@ -6,7 +6,6 @@ class ProductController {
       const products = await ProductService.getAll()
       res.json({ success: true, data: products.map(p => p.toJSON()) })
     } catch (err) {
-      console.error('[ProductController.getAll]', err)
       res.status(500).json({ success: false, error: err.message })
     }
   }
